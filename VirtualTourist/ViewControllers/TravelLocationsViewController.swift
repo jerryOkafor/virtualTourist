@@ -8,17 +8,22 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelLocationsViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
-     var dataController : DataController!
+    var dataController : DataController!
+    var fetchResultController:NSFetchedResultsController<Album>!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        configureMap()
+        //configure map
+        self.configureMap()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -26,6 +31,31 @@ class TravelLocationsViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //configure fetch
+        self.setupFetchResultController()
+        
+        self.refreshAlbumPins()
+    }
+    private func setupFetchResultController(){
+        let fetchRequest:NSFetchRequest<Album> = Album.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "albums")
+        
+        fetchResultController.delegate = self
+        
+        
+        //try to perform fetch
+        do{
+            try fetchResultController.performFetch()
+        }catch{
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
     
     private func configureMap(){
         self.mapView.delegate = self
@@ -41,9 +71,9 @@ class TravelLocationsViewController: UIViewController {
             let region = MKCoordinateRegion(center: center, span: span)
             self.mapView.setRegion(region, animated: true)
         }
-    
+        
     }
-
+    
     
     //Callled when MapView is long pressed
     @IBAction func onMapViewLongPress(_ sender: UILongPressGestureRecognizer) {
@@ -57,7 +87,6 @@ class TravelLocationsViewController: UIViewController {
         //ensure that the gesture recognizer is ended before adding annotation to the map
         
         if sender.state == .ended{
-            print("State ended!")
             let annotation = MKPointAnnotation()
             annotation.coordinate = cordinate
             
@@ -76,28 +105,37 @@ class TravelLocationsViewController: UIViewController {
                 
                 if let placeName = placeMark?[0].name{
                     print("Place Name found: \(placeName)")
-                     self.saveLocation(cordinate,locationName: placeName)
+                    self.saveLocation(cordinate,locationName: placeName)
                 }
             }
             
-          
+            
         }
         
     }
     
     private func saveLocation(_ cordinate:CLLocationCoordinate2D,locationName:String){
-       let album = Album(context: dataController.viewContext)
+        print("Saving Location......")
+        let album = Album(context: dataController.viewContext)
         album.lat = cordinate.latitude
         album.lng = cordinate.longitude
         album.name = locationName
         
         do{
+            print("I am here 00000")
             try dataController.viewContext.save()
         }catch{
-            self.shoeAlert(title: "Error", message: "Unable to save location pin")
+            print("Error \(error.localizedDescription)")
+            self.shoWAlert(title: "Error", message: "Unable to save location pin")
         }
     }
     
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.fetchResultController = nil
+    }
 }
 
 
@@ -105,17 +143,36 @@ class TravelLocationsViewController: UIViewController {
 
 extension TravelLocationsViewController : MKMapViewDelegate{
     
+    func refreshAlbumPins(){
+        if let albums = fetchResultController.fetchedObjects{
+            albums.forEach { (album) in
+                self.addAnnotation(album)
+            }
+        }
+    }
+    
+    func addAnnotation(_ album:Album){
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = CLLocationCoordinate2D(latitude: album.lat, longitude: album.lng)
+        
+        DispatchQueue.main.async {
+            
+            //add pin to map
+            self.mapView.addAnnotation(annotation)
+        }
+    }
+    
     //Called when the visible region of the map is changed
     //when the map is draged of pinched.
     func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-       let region = mapView.region
+        let region = mapView.region
         
         let mapData = MapData(lat:  region.center.latitude, lng: region.center.longitude, spanLatDelta: region.span.latitudeDelta, spanLngDelta: region.span.longitudeDelta)
         
         //save map data to local storage
         LocalStorage.mapData = mapData
     }
-
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
         
@@ -146,5 +203,27 @@ extension TravelLocationsViewController : MKMapViewDelegate{
             
             self.navigationController?.pushViewController(photoAlbumVC, animated: true)
         }
+    }
+}
+
+
+
+//FetchResultController Delegate
+extension TravelLocationsViewController : NSFetchedResultsControllerDelegate{
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        print("I am here!")
+        
+        guard let album = anObject as? Album else {return}
+        
+        switch type {
+        case .insert:
+            self.addAnnotation(album)
+            break
+        default:
+            break
+        }
+        
     }
 }
