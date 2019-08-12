@@ -139,6 +139,9 @@ class TravelLocationsViewController: UIViewController {
 extension TravelLocationsViewController : MKMapViewDelegate{
     
     func refreshAlbumPins(){
+        //remvoe existing annotations
+        
+        
         if let albums = fetchResultController.fetchedObjects{
             albums.forEach { (album) in
                 self.addAnnotation(album)
