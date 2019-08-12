@@ -56,15 +56,31 @@
 		C488E2AE2300EA0000845BE7 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				C488E2C72300EB2600845BE7 /* Model */,
+				C488E2C62300EB0E00845BE7 /* Assets */,
 				C488E2AF2300EA0000845BE7 /* AppDelegate.swift */,
 				C488E2B12300EA0000845BE7 /* ViewController.swift */,
+				C488E2BE2300EA0300845BE7 /* Info.plist */,
+			);
+			path = VirtualTourist;
+			sourceTree = "<group>";
+		};
+		C488E2C62300EB0E00845BE7 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
 				C488E2B32300EA0000845BE7 /* Main.storyboard */,
 				C488E2B92300EA0300845BE7 /* Assets.xcassets */,
 				C488E2BB2300EA0300845BE7 /* LaunchScreen.storyboard */,
-				C488E2BE2300EA0300845BE7 /* Info.plist */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		C488E2C72300EB2600845BE7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
 				C488E2B62300EA0000845BE7 /* VirtualTourist.xcdatamodeld */,
 			);
-			path = VirtualTourist;
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
