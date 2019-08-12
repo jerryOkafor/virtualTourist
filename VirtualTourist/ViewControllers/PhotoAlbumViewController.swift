@@ -116,7 +116,7 @@ class PhotoAlbumViewController: UIViewController {
         do{
             try self.fetchResultController.performFetch()
         }catch{
-            self.shoWAlert(title: "Error", message: error.localizedDescription)
+            self.showAlert(title: "Error", message: error.localizedDescription)
         }
         
     }
@@ -130,7 +130,7 @@ class PhotoAlbumViewController: UIViewController {
             self.toggleLoadingIndicator(false)
             
             guard error == nil else{
-                self.shoWAlert(title: "Error", message: error!.localizedDescription)
+                self.showAlert(title: "Error", message: error!.localizedDescription)
                 return
             }
             
@@ -152,7 +152,7 @@ class PhotoAlbumViewController: UIViewController {
             do{
                 try self.dataController.viewContext.save()
             }catch{
-                self.shoWAlert(title: "Error", message: "Unable to save photos")
+                self.showAlert(title: "Error", message: "Unable to save photos")
             }
         }
     }
@@ -263,14 +263,13 @@ extension PhotoAlbumViewController : UICollectionViewDataSource{
             //load photo image Data
             cell.activityIndicator.startAnimating()
             DispatchQueue.global(qos: .background).async {
-                let backgroundContext:NSManagedObjectContext!  = self.dataController?.backgroundContext
                 do{
                     let imageData  = try Data(contentsOf: URL(string: photo.imageUrl!)!)
                     photo.imageData = imageData
                     
                     //try to save context
                     do{
-                        try backgroundContext.save()
+                        try self.dataController.viewContext.save()
                     }catch{
                         print("Unable to save context: \(error.localizedDescription)")
                     }
@@ -311,7 +310,7 @@ extension PhotoAlbumViewController : UICollectionViewDelegate{
             self.dataController.viewContext.delete(photo)
             try self.dataController.viewContext.save()
         }catch{
-            self.shoWAlert(title: "Error", message: "Unable to delete photo, pleaese try again")
+            self.showAlert(title: "Error", message: "Unable to delete photo, pleaese try again")
         }
     }
 }
@@ -321,7 +320,6 @@ extension PhotoAlbumViewController : UICollectionViewDelegate{
 extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate{
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("Fetch controller will change content!")
         self.toggleNoImageLabel(self.fetchResultController.fetchedObjects?.count == 0)
     }
     

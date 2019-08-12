@@ -16,6 +16,7 @@ class TravelLocationsViewController: UIViewController {
     var dataController : DataController!
     var fetchResultController:NSFetchedResultsController<Album>!
     
+    var annotations = [MKPointAnnotation]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,7 +122,7 @@ class TravelLocationsViewController: UIViewController {
         do{
             try dataController.viewContext.save()
         }catch{
-            self.shoWAlert(title: "Error", message: "Unable to save location pin")
+            self.showAlert(title: "Error", message: "Unable to save location pin")
         }
     }
     
@@ -139,8 +140,10 @@ class TravelLocationsViewController: UIViewController {
 extension TravelLocationsViewController : MKMapViewDelegate{
     
     func refreshAlbumPins(){
-        //remvoe existing annotations
+        //remove existing annotations
+        self.mapView.removeAnnotations(self.annotations)
         
+        self.annotations.removeAll(keepingCapacity: false)
         
         if let albums = fetchResultController.fetchedObjects{
             albums.forEach { (album) in
@@ -152,6 +155,10 @@ extension TravelLocationsViewController : MKMapViewDelegate{
     func addAnnotation(_ album:Album){
         let annotation = MKPointAnnotation()
         annotation.coordinate = CLLocationCoordinate2D(latitude: album.lat, longitude: album.lng)
+        
+        guard !annotations.contains(annotation) else {return}
+        
+        self.annotations.append(annotation)
         
         DispatchQueue.main.async {
             //add pin to map
