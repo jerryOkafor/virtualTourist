@@ -24,8 +24,14 @@ class TravelLocationsViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Ok", style: .plain, target: nil, action: nil)
         // Do any additional setup after loading the view.
         
+        //configure fetch
+        self.setupFetchResultController()
+        
         //configure map
         self.configureMap()
+        
+        //load pins
+        self.loadAlbumPins()
         
     }
     
@@ -37,10 +43,7 @@ class TravelLocationsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        //configure fetch
-        self.setupFetchResultController()
-        
-        self.refreshAlbumPins()
+       
     }
     private func setupFetchResultController(){
         let fetchRequest:NSFetchRequest<Album> = Album.fetchRequest()
@@ -90,8 +93,7 @@ class TravelLocationsViewController: UIViewController {
             let annotation = MKPointAnnotation()
             annotation.coordinate = cordinate
             
-            //add pin to map
-            self.mapView.addAnnotation(annotation)
+            self.addAnnotation(annotation)
             
             let location = CLLocation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
             
@@ -126,12 +128,6 @@ class TravelLocationsViewController: UIViewController {
         }
     }
     
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        self.fetchResultController = nil
-    }
 }
 
 
@@ -139,7 +135,7 @@ class TravelLocationsViewController: UIViewController {
 
 extension TravelLocationsViewController : MKMapViewDelegate{
     
-    func refreshAlbumPins(){
+    func loadAlbumPins(){
         //remove existing annotations
         self.mapView.removeAnnotations(self.annotations)
         
@@ -156,6 +152,10 @@ extension TravelLocationsViewController : MKMapViewDelegate{
         let annotation = MKPointAnnotation()
         annotation.coordinate = CLLocationCoordinate2D(latitude: album.lat, longitude: album.lng)
         
+        self.addAnnotation(annotation)
+    }
+    
+    func addAnnotation(_ annotation:MKPointAnnotation){
         guard !annotations.contains(annotation) else {return}
         
         self.annotations.append(annotation)

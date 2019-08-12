@@ -23,6 +23,8 @@ class PhotoAlbumViewController: UIViewController {
     var fetchResultController:NSFetchedResultsController<Photo>!
     var album:Album!
     
+    var pages:Int = 0
+    
     var loadPhotosTask: URLSessionDataTask? = nil
     
     override func viewDidLoad() {
@@ -52,7 +54,8 @@ class PhotoAlbumViewController: UIViewController {
             self.toggleNoImageLabel(true)
             
             //laod new photos
-            self.loadNewPhotosForAlbum()
+            let url = ApiClient.EndPoints.photos(album.lat,album.lng).url
+            self.loadNewPhotosForAlbum(url)
         }else{
             self.toggleNoImageLabel(false)
         }
@@ -62,9 +65,6 @@ class PhotoAlbumViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        self.fetchResultController = nil
-        
         self.loadPhotosTask?.cancel()
     }
     
@@ -122,10 +122,10 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     
-    private func loadNewPhotosForAlbum(){
+    private func loadNewPhotosForAlbum(_ url:URL){
         self.toggleLoadingIndicator(true)
         
-        self.loadPhotosTask = ApiClient.getPhotosForLocation(lat: album.lat, lng: album.lng){response,error in
+        self.loadPhotosTask = ApiClient.getPhotosForLocation(url:url){response,error in
             
             self.toggleLoadingIndicator(false)
             
@@ -135,6 +135,7 @@ class PhotoAlbumViewController: UIViewController {
             }
             
             
+            self.pages = response?.photos.pages ?? 0
             if let photosMetaData = response?.photos.photo{
                 self.saveAllPhotos(photosMetaData)
             }
@@ -159,13 +160,14 @@ class PhotoAlbumViewController: UIViewController {
     
     private func toggleLoadingIndicator(_ show:Bool){
         self.activityIndicator.isHidden = !show
+        self.newCollectionButton.isHidden = show
+        
         if show{
             self.activityIndicator.startAnimating()
         }else{
             self.activityIndicator.stopAnimating()
         }
         
-        self.newCollectionButton.isHidden = show
     }
     
     @IBAction func onNewCollectonButtonClicked(_ sender: UIButton) {
@@ -173,12 +175,22 @@ class PhotoAlbumViewController: UIViewController {
         self.deletePhotos()
         
         //reload photos
-        self.loadNewPhotosForAlbum()
+        var url:URL
+        
+        if self.pages == 0{
+            url = ApiClient.EndPoints.photos(album.lat, album.lng).url
+        }else{
+            let newPageNumber = arc4random_uniform(UInt32(pages))
+            url = ApiClient.EndPoints.photosWithPageNumber(album.lat, album.lng,Int(newPageNumber)).url
+        }
+        self.loadNewPhotosForAlbum(url)
     }
     
     private func deletePhotos(){
+        self.toggleLoadingIndicator(true)
         
         if let photos = self.fetchResultController.fetchedObjects{
+           
             for photo in photos{
                 self.dataController.viewContext.delete(photo)
                 
@@ -190,7 +202,7 @@ class PhotoAlbumViewController: UIViewController {
                 }
             }
 
-            
+            self.toggleLoadingIndicator(false)
         }
         
     }
@@ -323,10 +335,7 @@ extension PhotoAlbumViewController : UICollectionViewDelegate{
 extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate{
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        DispatchQueue.main.async {
-            print("Controller Did change!")
-            self.toggleNoImageLabel(self.fetchResultController.fetchedObjects?.count == 0)
-        }
+        self.toggleNoImageLabel(self.fetchResultController.fetchedObjects?.count == 0)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {

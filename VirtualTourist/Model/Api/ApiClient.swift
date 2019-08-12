@@ -8,9 +8,6 @@
 
 import Foundation
 class ApiClient {
-    static let apiKey = "0a20f5a7710d283bb0f49830890c73a7"
-    static let secrete  = "903b022e256682c9"
-    
     enum EndPoints {
         static let base = "https://api.flickr.com/services/rest/?method=flickr.photos.search"
         static let fetchImage = "https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg"
@@ -35,8 +32,9 @@ class ApiClient {
         }
     }
     
-    class func getPhotosForLocation(lat:Double, lng:Double,completion:@escaping (PhotosForLocationResponse?,Error?)->Void) -> URLSessionDataTask {
-        let request = URLRequest(url: EndPoints.photos(lat,lng).url)
+    class func getPhotosForLocation(url:URL,completion:@escaping (PhotosForLocationResponse?,Error?)->Void) -> URLSessionDataTask {
+        print(url.absoluteString)
+        let request = URLRequest(url:url)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
             

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C44A100F2302164300AE1D7C /* ApiClient+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44A100E2302164300AE1D7C /* ApiClient+Constants.swift */; };
 		C488E2B02300EA0000845BE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C488E2AF2300EA0000845BE7 /* AppDelegate.swift */; };
 		C488E2B22300EA0000845BE7 /* TravelLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C488E2B12300EA0000845BE7 /* TravelLocationsViewController.swift */; };
 		C488E2B52300EA0000845BE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C488E2B32300EA0000845BE7 /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C44A100E2302164300AE1D7C /* ApiClient+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApiClient+Constants.swift"; sourceTree = "<group>"; };
 		C488E2AC2300EA0000845BE7 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C488E2AF2300EA0000845BE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C488E2B12300EA0000845BE7 /* TravelLocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationsViewController.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 			children = (
 				C4A7042F2301902A00D20C8B /* Response */,
 				C488E2D02301091900845BE7 /* ApiClient.swift */,
+				C44A100E2302164300AE1D7C /* ApiClient+Constants.swift */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				C4A7042E23016FAC00D20C8B /* ViewController+Extensions.swift in Sources */,
 				C4A704312301920700D20C8B /* PhotoResponse.swift in Sources */,
 				C488E2B02300EA0000845BE7 /* AppDelegate.swift in Sources */,
+				C44A100F2302164300AE1D7C /* ApiClient+Constants.swift in Sources */,
 				C488E2B82300EA0000845BE7 /* VirtualTourist.xcdatamodeld in Sources */,
 				C488E2CE2300F4DD00845BE7 /* LocalStorage.swift in Sources */,
 				C4A704262301699D00D20C8B /* DataController.swift in Sources */,
