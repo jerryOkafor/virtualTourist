@@ -19,6 +19,8 @@ class TravelLocationsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "Travel Locations"
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Ok", style: .plain, target: nil, action: nil)
         // Do any additional setup after loading the view.
         
         //configure map
@@ -61,10 +63,7 @@ class TravelLocationsViewController: UIViewController {
         self.mapView.delegate = self
         
         //try to get the persisted map data if it exists
-        
         if let mapData = LocalStorage.mapData{
-            print("Map Data Retrived: \(mapData)")
-            
             //set the map region
             let span = MKCoordinateSpan(latitudeDelta: mapData.spanLatDelta, longitudeDelta: mapData.spanLngDelta)
             let center = CLLocationCoordinate2D(latitude: mapData.lat, longitude: mapData.lng)
@@ -104,7 +103,6 @@ class TravelLocationsViewController: UIViewController {
                 }
                 
                 if let placeName = placeMark?[0].name{
-                    print("Place Name found: \(placeName)")
                     self.saveLocation(cordinate,locationName: placeName)
                 }
             }
@@ -115,17 +113,14 @@ class TravelLocationsViewController: UIViewController {
     }
     
     private func saveLocation(_ cordinate:CLLocationCoordinate2D,locationName:String){
-        print("Saving Location......")
         let album = Album(context: dataController.viewContext)
         album.lat = cordinate.latitude
         album.lng = cordinate.longitude
         album.name = locationName
         
         do{
-            print("I am here 00000")
             try dataController.viewContext.save()
         }catch{
-            print("Error \(error.localizedDescription)")
             self.shoWAlert(title: "Error", message: "Unable to save location pin")
         }
     }
@@ -156,7 +151,6 @@ extension TravelLocationsViewController : MKMapViewDelegate{
         annotation.coordinate = CLLocationCoordinate2D(latitude: album.lat, longitude: album.lng)
         
         DispatchQueue.main.async {
-            
             //add pin to map
             self.mapView.addAnnotation(annotation)
         }
@@ -191,17 +185,20 @@ extension TravelLocationsViewController : MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let cordinate = view.annotation?.coordinate{
-            print("Lat: \(cordinate.latitude) Lng: \(cordinate.longitude)")
+            
             //here we can try to load the album associated with the cordinate before navigating,
             //but we can just navigate for now.
+            if let album = self.fetchResultController.fetchedObjects?.first(where: { (album) -> Bool in
+                album.lat == cordinate.latitude && album.lng == cordinate.longitude
+            }){
+                let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: String(describing: PhotoAlbumViewController.self)) as! PhotoAlbumViewController
+                //inject the photo album here
+                photoAlbumVC.dataController = dataController
+                photoAlbumVC.album = album
+                
+                self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+            }
             
-            let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: String(describing: PhotoAlbumViewController.self)) as! PhotoAlbumViewController
-            //inject the photo album here
-            
-            ApiClient.getPhotosForLocation(lat: cordinate.latitude, lng: cordinate.longitude)
-            
-            
-            self.navigationController?.pushViewController(photoAlbumVC, animated: true)
         }
     }
 }
@@ -212,8 +209,6 @@ extension TravelLocationsViewController : MKMapViewDelegate{
 extension TravelLocationsViewController : NSFetchedResultsControllerDelegate{
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-        print("I am here!")
         
         guard let album = anObject as? Album else {return}
         

@@ -35,13 +35,17 @@ class ApiClient {
         }
     }
     
-    class func getPhotosForLocation(lat:Double, lng:Double) {
+    class func getPhotosForLocation(lat:Double, lng:Double,completion:@escaping (PhotosForLocationResponse?,Error?)->Void) -> URLSessionDataTask {
         let request = URLRequest(url: EndPoints.photos(lat,lng).url)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             if let error = error{
                 print("Error: \(error)")
+                
+                DispatchQueue.main.async {
+                    completion(nil,error)
+                }
             }
             
             guard let data = data else{
@@ -49,14 +53,34 @@ class ApiClient {
                 return
             }
             
-            //clean response
-            var newDate = data.subdata(in: 14..<data.count)
-            newDate.removeLast()
+            let decoder = JSONDecoder()
             
-            print(String(data:newDate,encoding: .utf8)!)
+            do{
+                //clean response
+                var newDate = data.subdata(in: 14..<data.count)
+                newDate.removeLast()
+                
+//                                print(String(data:newDate,encoding: .utf8)!)
+                
+                let photoForLocatonResponse = try decoder.decode(PhotosForLocationResponse.self, from: newDate)
+                
+//                                print(photoForLocatonResponse)
+                
+                DispatchQueue.main.async {
+                    completion(photoForLocatonResponse,nil)
+                }
+                
+            }catch{
+                print(error)
+                DispatchQueue.main.async {
+                    completion(nil,error)
+                }
+            }
+            
         }
         
         dataTask.resume()
         
+        return dataTask
     }
 }

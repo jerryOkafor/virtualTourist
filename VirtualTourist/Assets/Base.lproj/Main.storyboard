@@ -111,7 +111,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="pfa-JT-Y1S"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                         <state key="normal" title="New Collection"/>
                                         <connections>
                                             <action selector="onNewCollectonButtonClicked:" destination="DTV-Z6-PFT" eventType="touchUpInside" id="zi8-Sb-lqs"/>
@@ -162,9 +162,11 @@
                         <viewLayoutGuide key="safeArea" id="1vE-1x-7FP"/>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="s3r-35-Q2S" id="ZSw-Z9-CKm"/>
                         <outlet property="collectionView" destination="zHX-I2-dKE" id="lwr-ld-IpW"/>
                         <outlet property="collectionViewFlowLayout" destination="M2s-fl-yaw" id="YXq-T0-zTP"/>
                         <outlet property="mapView" destination="9eV-xw-hs3" id="ahb-5F-aX8"/>
+                        <outlet property="newCollectionButton" destination="FEd-xw-q4c" id="dHh-Uy-onG"/>
                         <outlet property="noImageLabel" destination="Xko-yF-tsP" id="hAY-Mi-IVJ"/>
                     </connections>
                 </viewController>
