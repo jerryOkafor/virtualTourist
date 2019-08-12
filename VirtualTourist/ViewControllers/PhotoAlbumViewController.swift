@@ -13,7 +13,10 @@ class PhotoAlbumViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var collectionViewFlowLayout: UICollectionViewFlowLayout!
+    @IBOutlet weak var noImageLabel: UILabel!
     
+    
+    var dataController : DataController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,6 +57,10 @@ class PhotoAlbumViewController: UIViewController {
     }
     
 
+    private func toggleNoImageLabel(_ show:Bool){
+        self.noImageLabel.isEnabled = !show
+        self.collectionView.isHidden = show
+    }
 }
 
 
@@ -65,6 +72,8 @@ extension PhotoAlbumViewController : MKMapViewDelegate{
 
 class AlbumViewCell: UICollectionViewCell {
     @IBOutlet weak var albumImageView: UIImageView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     
 }
 

@@ -12,6 +12,8 @@ import MapKit
 class TravelLocationsViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
+     var dataController : DataController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -62,14 +64,38 @@ class TravelLocationsViewController: UIViewController {
             //add pin to map
             self.mapView.addAnnotation(annotation)
             
-            //save the selected location also
-            saveLocation(cordinate)
+            let location = CLLocation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)
+            
+            //try to find the name corresponding to this cordinate
+            CLGeocoder().reverseGeocodeLocation(location) { (placeMark, error) in
+                guard error == nil else{
+                    //save the selected location also
+                    self.saveLocation(cordinate,locationName: "No Name")
+                    return
+                }
+                
+                if let placeName = placeMark?[0].name{
+                    print("Place Name found: \(placeName)")
+                     self.saveLocation(cordinate,locationName: placeName)
+                }
+            }
+            
+          
         }
         
     }
     
-    private func saveLocation(_ cordinate:CLLocationCoordinate2D){
-        print("saving Location to core data")
+    private func saveLocation(_ cordinate:CLLocationCoordinate2D,locationName:String){
+       let album = Album(context: dataController.viewContext)
+        album.lat = cordinate.latitude
+        album.lng = cordinate.longitude
+        album.name = locationName
+        
+        do{
+            try dataController.viewContext.save()
+        }catch{
+            self.shoeAlert(title: "Error", message: "Unable to save location pin")
+        }
     }
     
 }
@@ -114,6 +140,9 @@ extension TravelLocationsViewController : MKMapViewDelegate{
             
             let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: String(describing: PhotoAlbumViewController.self)) as! PhotoAlbumViewController
             //inject the photo album here
+            
+            ApiClient.getPhotosForLocation(lat: cordinate.latitude, lng: cordinate.longitude)
+            
             
             self.navigationController?.pushViewController(photoAlbumVC, animated: true)
         }
