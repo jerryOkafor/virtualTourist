@@ -36,7 +36,36 @@ class TravelLocationsViewController: UIViewController {
     
     }
 
-
+    
+    //Callled when MapView is long pressed
+    @IBAction func onMapViewLongPress(_ sender: UILongPressGestureRecognizer) {
+        
+        //get the point that was long pressedd base on the map view
+        let cgPoint = sender.location(in: mapView)
+        
+        //convert the cgPoint to cordinates
+        let cordinate  = self.mapView.convert(cgPoint, toCoordinateFrom: self.mapView)
+        
+        //ensure that the gesture recognizer is ended before adding annotation to the map
+        
+        if sender.state == .ended{
+            print("State ended!")
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = cordinate
+            
+            //add pin to map
+            self.mapView.addAnnotation(annotation)
+            
+            //save the selected location also
+            saveLocation(cordinate)
+        }
+        
+    }
+    
+    private func saveLocation(_ cordinate:CLLocationCoordinate2D){
+        print("saving Location to core data")
+    }
+    
 }
 
 
