@@ -32,7 +32,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="mapVIew" destination="7FX-lV-XP1" id="WbX-SK-aGr"/>
+                        <outlet property="mapView" destination="7FX-lV-XP1" id="WbX-SK-aGr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -52,7 +52,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PAy-f1-SHN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1359" y="126"/>
+            <point key="canvasLocation" x="1451" y="21"/>
         </scene>
     </scenes>
 </document>

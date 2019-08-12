@@ -14,6 +14,8 @@
 		C488E2BA2300EA0300845BE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C488E2B92300EA0300845BE7 /* Assets.xcassets */; };
 		C488E2BD2300EA0300845BE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C488E2BB2300EA0300845BE7 /* LaunchScreen.storyboard */; };
 		C488E2CA2300EE0F00845BE7 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C488E2C92300EE0F00845BE7 /* PhotoAlbumViewController.swift */; };
+		C488E2CC2300F46000845BE7 /* MapData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C488E2CB2300F46000845BE7 /* MapData.swift */; };
+		C488E2CE2300F4DD00845BE7 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C488E2CD2300F4DD00845BE7 /* LocalStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		C488E2BC2300EA0300845BE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C488E2BE2300EA0300845BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C488E2C92300EE0F00845BE7 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
+		C488E2CB2300F46000845BE7 /* MapData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapData.swift; sourceTree = "<group>"; };
+		C488E2CD2300F4DD00845BE7 /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				C488E2B62300EA0000845BE7 /* VirtualTourist.xcdatamodeld */,
+				C488E2CB2300F46000845BE7 /* MapData.swift */,
+				C488E2CD2300F4DD00845BE7 /* LocalStorage.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -168,6 +174,8 @@
 				C488E2B22300EA0000845BE7 /* TravelLocationsViewController.swift in Sources */,
 				C488E2B02300EA0000845BE7 /* AppDelegate.swift in Sources */,
 				C488E2B82300EA0000845BE7 /* VirtualTourist.xcdatamodeld in Sources */,
+				C488E2CE2300F4DD00845BE7 /* LocalStorage.swift in Sources */,
+				C488E2CC2300F46000845BE7 /* MapData.swift in Sources */,
 				C488E2CA2300EE0F00845BE7 /* PhotoAlbumViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
