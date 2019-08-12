@@ -265,16 +265,19 @@ extension PhotoAlbumViewController : UICollectionViewDataSource{
             DispatchQueue.global(qos: .background).async {
                 do{
                     let imageData  = try Data(contentsOf: URL(string: photo.imageUrl!)!)
-                    photo.imageData = imageData
                     
-                    //try to save context
-                    do{
-                        try self.dataController.viewContext.save()
-                    }catch{
-                        print("Unable to save context: \(error.localizedDescription)")
-                    }
-                    
+                    //update the imageData in the main thread
                     DispatchQueue.main.async {
+                        photo.imageData = imageData
+                        
+                        //try to save context
+                        do{
+                            try self.dataController.viewContext.save()
+                        }catch{
+                            print("Unable to save context: \(error.localizedDescription)")
+                        }
+                        
+                        
                         cell.bindImageData(imageData)
                     }
                     
@@ -320,7 +323,10 @@ extension PhotoAlbumViewController : UICollectionViewDelegate{
 extension PhotoAlbumViewController:NSFetchedResultsControllerDelegate{
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        self.toggleNoImageLabel(self.fetchResultController.fetchedObjects?.count == 0)
+        DispatchQueue.main.async {
+            print("Controller Did change!")
+            self.toggleNoImageLabel(self.fetchResultController.fetchedObjects?.count == 0)
+        }
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
