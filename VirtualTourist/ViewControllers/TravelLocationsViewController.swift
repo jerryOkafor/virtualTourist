@@ -19,6 +19,12 @@ class TravelLocationsViewController: UIViewController {
         configureMap()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    
     private func configureMap(){
         self.mapView.delegate = self
         
@@ -98,5 +104,18 @@ extension TravelLocationsViewController : MKMapViewDelegate{
         }
         
         return pin
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let cordinate = view.annotation?.coordinate{
+            print("Lat: \(cordinate.latitude) Lng: \(cordinate.longitude)")
+            //here we can try to load the album associated with the cordinate before navigating,
+            //but we can just navigate for now.
+            
+            let photoAlbumVC = storyboard?.instantiateViewController(withIdentifier: String(describing: PhotoAlbumViewController.self)) as! PhotoAlbumViewController
+            //inject the photo album here
+            
+            self.navigationController?.pushViewController(photoAlbumVC, animated: true)
+        }
     }
 }
