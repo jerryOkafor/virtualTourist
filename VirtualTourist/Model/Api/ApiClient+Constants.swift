@@ -8,6 +8,6 @@
 
 import Foundation
 extension ApiClient{
-    static let apiKey = "0a20f5a7710d283bb0f49830890c73a7"
+    static let apiKey = ""
     
 }

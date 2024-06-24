@@ -37,7 +37,7 @@ struct PhotosForLocation:Codable {
     let page:Int
     let pages:Int
     let perPage:Int
-    let total:String
+    let total:Int
     let photo:[PhotoMetaData]
     
     enum CodingKeys : String, CodingKey{

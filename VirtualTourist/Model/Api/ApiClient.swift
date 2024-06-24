@@ -18,10 +18,13 @@ class ApiClient {
         
         var stringValue: String {
             switch self {
+            
             case .photos(let lat, let lng):
-                return EndPoints.base + "&api_key=\(ApiClient.apiKey)" + "&lat=\(lat)&lon=\(lng)&format=json"
+                return EndPoints.base + "&api_key=\(Configuration.apiKey)" + "&lat=\(lat)&lon=\(lng)&format=json"
+            
             case .photosWithPageNumber(let lat, let lon, let pageNumber):
-                return EndPoints.base + "&api_key=\(ApiClient.apiKey)" + "&lat=\(lat)&lon=\(lon)&page=\(pageNumber)&format=json"
+                return EndPoints.base + "&api_key=\(Configuration.apiKey)" + "&lat=\(lat)&lon=\(lon)&page=\(pageNumber)&format=json"
+            
             case .imageFromMetadata(let farmId, let serverId, let photoId, let secret):
                 return "https://farm\(farmId).staticflickr.com/\(serverId)/\(photoId)_\(secret).jpg"
             }
@@ -57,13 +60,9 @@ class ApiClient {
                 //clean response
                 var newDate = data.subdata(in: 14..<data.count)
                 newDate.removeLast()
-                
-//                                print(String(data:newDate,encoding: .utf8)!)
-                
+                print(String(data:newDate,encoding: .utf8)!)
                 let photoForLocatonResponse = try decoder.decode(PhotosForLocationResponse.self, from: newDate)
-                
-//                                print(photoForLocatonResponse)
-                
+                print(photoForLocatonResponse)
                 DispatchQueue.main.async {
                     completion(photoForLocatonResponse,nil)
                 }
